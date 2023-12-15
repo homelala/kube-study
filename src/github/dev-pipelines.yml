@@ -1,0 +1,6 @@
+name: DEV CI pipeline
+
+on:
+  push:
+    branches:
+      - develop
