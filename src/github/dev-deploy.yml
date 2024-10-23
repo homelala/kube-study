@@ -20,12 +20,12 @@ jobs:
       - name: Docker login
         uses: docker/login-action@v2
         with:
-          username: "homelala"
-          password: "lee28362836!"
+          username: ${{ secrets.DOCKER_USERNAME }}  # GitHub Secrets 사용
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Image with cache
         run: |
-          docker build -t aimmo.homelala/hello-kube-test:latest
+          docker build -t homelala/hello-kube-test:latest .
 
       - name: Test with pytest
         run: |
