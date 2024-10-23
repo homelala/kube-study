@@ -1,0 +1,41 @@
+name: DEV CI pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  build:
+    name: Test, Build, Push, Commit
+    runs-on:  [ubuntu-latest]
+
+    steps:
+      # 1. Github Repository 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 도커 로그인
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: "homelala"
+          password: "lee28362836!"
+
+      - name: Build Image with cache
+        run: |
+          docker build -t aimmo.homelala/hello-kube-test:latest
+
+      - name: Test with pytest
+        run: |
+          docker run -t --rm homelala/hello-kube-test:latest /bin/bash -c "PHASE=test pytest --numprocesses=auto -rf --disable-warnings tests/"
+
+      - name: Push Image
+        run: |
+          docker push homelala/hello-kube-test:latest
+
+      - name: Delete Docker Image
+        if: always()
+        run: |
+          docker rmi homelala/hello-kube-test:latest
